@@ -1,0 +1,48 @@
+{
+  "name": "Warning",
+  "type": "object",
+  "properties": {
+    "employee_id": {
+      "type": "string",
+      "title": "\u0627\u0644\u0645\u0648\u0638\u0641"
+    },
+    "employee_name": {
+      "type": "string",
+      "title": "\u0627\u0633\u0645 \u0627\u0644\u0645\u0648\u0638\u0641"
+    },
+    "date": {
+      "type": "string",
+      "format": "date",
+      "title": "\u0627\u0644\u062a\u0627\u0631\u064a\u062e"
+    },
+    "type": {
+      "type": "string",
+      "enum": [
+        "verbal",
+        "written",
+        "final"
+      ],
+      "default": "written",
+      "title": "\u0646\u0648\u0639 \u0627\u0644\u0625\u0646\u0630\u0627\u0631"
+    },
+    "reason": {
+      "type": "string",
+      "title": "\u0627\u0644\u0633\u0628\u0628"
+    },
+    "severity": {
+      "type": "string",
+      "enum": [
+        "low",
+        "medium",
+        "high"
+      ],
+      "default": "medium",
+      "title": "\u0627\u0644\u062e\u0637\u0648\u0631\u0629"
+    }
+  },
+  "required": [
+    "employee_name",
+    "type",
+    "reason"
+  ]
+}

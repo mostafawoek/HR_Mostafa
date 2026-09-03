@@ -1,0 +1,119 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@import url('https://fonts.googleapis.com/css2?family=Tajawal:wght@300;400;500;700;800;900&display=swap');
+
+@layer base {
+  :root {
+    --background: 250 47% 98%;
+    --foreground: 240 10% 12%;
+    --card: 0 0% 100%;
+    --card-foreground: 240 10% 12%;
+    --popover: 0 0% 100%;
+    --popover-foreground: 240 10% 12%;
+    --primary: 160 84% 30%;
+    --primary-foreground: 0 0% 100%;
+    --secondary: 160 30% 94%;
+    --secondary-foreground: 160 50% 25%;
+    --muted: 160 15% 96%;
+    --muted-foreground: 160 5% 40%;
+    --accent: 38 95% 42%;
+    --accent-foreground: 0 0% 100%;
+    --destructive: 0 75% 50%;
+    --destructive-foreground: 0 0% 98%;
+    --success: 142 71% 40%;
+    --warning: 38 92% 48%;
+    --border: 160 15% 90%;
+    --input: 160 15% 90%;
+    --ring: 160 84% 30%;
+    --chart-1: 160 84% 30%;
+    --chart-2: 38 95% 42%;
+    --chart-3: 200 80% 40%;
+    --chart-4: 142 60% 38%;
+    --chart-5: 0 70% 48%;
+    --radius: 1rem;
+    --font-heading: 'Tajawal', ui-sans-serif, system-ui, sans-serif;
+    --font-body: 'Tajawal', ui-sans-serif, system-ui, sans-serif;
+    --font-display: 'Tajawal', ui-sans-serif, system-ui, sans-serif;
+    --font-mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+    --sidebar-bg: 250 30% 12%;
+    --sidebar-fg: 250 10% 90%;
+  }
+
+  .dark {
+    --background: 250 30% 8%;
+    --foreground: 250 10% 95%;
+    --card: 250 25% 12%;
+    --card-foreground: 250 10% 95%;
+    --popover: 250 25% 12%;
+    --popover-foreground: 250 10% 95%;
+    --primary: 160 70% 40%;
+    --primary-foreground: 0 0% 100%;
+    --secondary: 160 20% 18%;
+    --secondary-foreground: 160 10% 90%;
+    --muted: 160 15% 16%;
+    --muted-foreground: 160 10% 65%;
+    --accent: 38 90% 50%;
+    --accent-foreground: 0 0% 100%;
+    --destructive: 0 70% 55%;
+    --destructive-foreground: 0 0% 98%;
+    --border: 160 15% 22%;
+    --input: 160 15% 22%;
+    --ring: 160 70% 40%;
+    --sidebar-bg: 160 40% 8%;
+    --sidebar-fg: 160 10% 90%;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border outline-ring/50;
+  }
+  body {
+    @apply bg-background text-foreground font-body;
+    direction: rtl;
+  }
+}
+
+@layer utilities {
+  .glass {
+    background: rgba(255, 255, 255, 0.65);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+  }
+  .dark .glass {
+    background: rgba(20, 18, 35, 0.6);
+  }
+  .gradient-primary {
+    background: linear-gradient(135deg, hsl(160 84% 30%), hsl(172 66% 30%));
+  }
+  .gradient-accent {
+    background: linear-gradient(135deg, hsl(38 95% 42%), hsl(28 85% 48%));
+  }
+  .gradient-mesh {
+    background-color: hsl(160 30% 98%);
+    background-image:
+      radial-gradient(at 0% 0%, hsla(160, 84%, 30%, 0.12) 0px, transparent 50%),
+      radial-gradient(at 100% 0%, hsla(38, 95%, 42%, 0.10) 0px, transparent 50%),
+      radial-gradient(at 100% 100%, hsla(172, 66%, 30%, 0.08) 0px, transparent 50%),
+      radial-gradient(at 0% 100%, hsla(200, 80%, 40%, 0.08) 0px, transparent 50%);
+  }
+  .dark .gradient-mesh {
+    background-color: hsl(160 30% 8%);
+    background-image:
+      radial-gradient(at 0% 0%, hsla(160, 70%, 40%, 0.18) 0px, transparent 50%),
+      radial-gradient(at 100% 0%, hsla(38, 90%, 50%, 0.12) 0px, transparent 50%),
+      radial-gradient(at 100% 100%, hsla(172, 66%, 30%, 0.12) 0px, transparent 50%),
+      radial-gradient(at 0% 100%, hsla(200, 80%, 40%, 0.08) 0px, transparent 50%);
+  }
+  .text-gradient {
+    background: linear-gradient(135deg, hsl(160 84% 30%), hsl(38 95% 42%));
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
+  .scrollbar-thin::-webkit-scrollbar { width: 6px; height: 6px; }
+  .scrollbar-thin::-webkit-scrollbar-thumb { background: hsl(250 20% 80%); border-radius: 999px; }
+  .scrollbar-thin::-webkit-scrollbar-track { background: transparent; }
+}
