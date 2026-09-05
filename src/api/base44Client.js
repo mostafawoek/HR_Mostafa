@@ -27,6 +27,6 @@ export const base44 = {
     redirectToLogin: () => { window.location.href = '/login'; },
     loginWithProvider: () => { throw new Error('Google login is not configured. Use email and password.'); },
   },
-  users: { inviteUser: (email, role = 'user', name = '', password) => request('/api/users', json('POST', { email, role: role === 'admin' ? 'admin' : 'employee', name, password })) },
+  users: { inviteUser: (email, role = 'user', name = '', password, permissions) => request('/api/users', json('POST', { email, role: role === 'admin' ? 'admin' : 'employee', name, password, permissions })) },
   integrations: { Core: { UploadFile: async ({ file }) => { const form = new FormData(); form.append('file', file); return request('/api/entities/Document/upload', { method: 'POST', body: form }); } } }
 };
