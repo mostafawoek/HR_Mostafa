@@ -4,6 +4,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { base44 } from '@/api/base44Client';
 import { useAuth } from '@/lib/AuthContext';
 import { useLanguage } from '@/lib/i18n';
+import { canAccess } from '@/lib/permissions';
 import {
   LayoutDashboard, Users, Building2, CalendarDays, AlertTriangle,
   FileText, UserCog, LogOut, Menu, X, Sparkles, Moon, Sun,
@@ -28,8 +29,8 @@ export default function Layout() {
     { to: '/warnings', label: t.nav_warnings, icon: AlertTriangle, gradient: 'from-rose-500 to-red-600' },
     { to: '/documents', label: t.nav_documents, icon: FileText, gradient: 'from-cyan-500 to-sky-600' },
     { to: '/reports', label: t.nav_reports, icon: FileBarChart, gradient: 'from-indigo-500 to-violet-600' },
-    ...(user?.role === 'admin' ? [{ to: '/users', label: t.nav_users, icon: UserCog, gradient: 'from-fuchsia-500 to-pink-600' }] : []),
-  ];
+    { to: '/users', label: t.nav_users, icon: UserCog, gradient: 'from-fuchsia-500 to-pink-600' },
+  ].filter(item => item.to === '/' ? canAccess(user, 'dashboard') : canAccess(user, item.to.slice(1)));
 
   const toggleDark = () => {
     setDark(d => !d);
