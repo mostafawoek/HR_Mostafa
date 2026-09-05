@@ -101,8 +101,8 @@ export default function EmployeeForm({ employee, departments, onSave, onClose })
               <Select value={form.gender} onValueChange={v => setForm({ ...form, gender: v })}>
                 <SelectTrigger><SelectValue /></SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="male">{genderLabels.male}</SelectItem>
-                  <SelectItem value="female">{genderLabels.female}</SelectItem>
+                  <SelectItem value="male">{genderLabels.male.label}</SelectItem>
+                  <SelectItem value="female">{genderLabels.female.label}</SelectItem>
                 </SelectContent>
               </Select>
             </div>
