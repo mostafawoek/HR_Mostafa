@@ -35,17 +35,16 @@ const auth = async (req, res, next) => {
 const admin = (req, res, next) => req.user?.role === 'admin' ? next() : res.status(403).json({ message: 'Admin permission required' });
 
 app.get('/api/health', (_req, res) => res.json({ ok: true }));
-app.post('/api/auth/register', async (req, res) => {
-  const { email, password, name = '' } = req.body || {};
+app.post('/api/auth/register', (_req, res) => res.status(403).json({ message: 'Public registration is disabled. Contact the administrator.' }));
+app.post('/api/users', auth, admin, async (req, res) => {
+  const { email, password, name = '', role = 'employee' } = req.body || {};
+  const normalizedRole = role === 'admin' ? 'admin' : 'employee';
   if (!email || !password || password.length < 8) return res.status(400).json({ message: 'Email and password (8+ characters) are required' });
   try {
-    const count = await pool.query('SELECT count(*)::int AS count FROM app_users');
-    const role = count.rows[0].count === 0 ? 'admin' : 'employee';
     const hash = await bcrypt.hash(password, 12);
-    const { rows } = await pool.query('INSERT INTO app_users(email,name,password_hash,role) VALUES($1,$2,$3,$4) RETURNING id,email,name,role,active', [email.toLowerCase(), name, hash, role]);
-    res.cookie('hr_session', sign(rows[0]), { httpOnly: true, sameSite: 'lax', secure: process.env.NODE_ENV === 'production', maxAge: 7 * 86400000 });
-    res.status(201).json({ user: safeUser(rows[0]) });
-  } catch (e) { res.status(e.code === '23505' ? 409 : 500).json({ message: e.code === '23505' ? 'Email already exists' : 'Registration failed' }); }
+    const { rows } = await pool.query('INSERT INTO app_users(email,name,password_hash,role) VALUES($1,$2,$3,$4) RETURNING id,email,name,role,active,created_at AS created_date', [email.toLowerCase(), name, hash, normalizedRole]);
+    res.status(201).json(rows[0]);
+  } catch (e) { res.status(e.code === '23505' ? 409 : 500).json({ message: e.code === '23505' ? 'Email already exists' : 'User creation failed' }); }
 });
 app.post('/api/auth/login', async (req, res) => {
   const { email, password } = req.body || {};
