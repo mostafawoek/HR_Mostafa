@@ -79,7 +79,8 @@ app.post('/api/entities/:entity/upload', auth, upload.single('file'), async (req
 });
 app.get('/api/files/:id', auth, async (req, res) => { const { rows } = await pool.query('SELECT filename,mime_type,content FROM file_documents WHERE id=$1', [req.params.id]); if (!rows[0]) return res.sendStatus(404); res.type(rows[0].mime_type).attachment(rows[0].filename).send(rows[0].content); });
 app.get('/api/users', auth, admin, async (_req, res) => { const { rows } = await pool.query('SELECT id,email,name,role,active,created_at AS created_date FROM app_users ORDER BY created_at DESC'); res.json(rows); });
-app.patch('/api/users/:id', auth, admin, async (req, res) => { const { rows } = await pool.query('UPDATE app_users SET role=COALESCE($1,role), active=COALESCE($2,active), name=COALESCE($3,name), updated_at=now() WHERE id=$4 RETURNING id,email,name,role,active', [req.body.role, req.body.active, req.body.name, req.params.id]); res.json(rows[0]); });
+app.patch('/api/users/:id', auth, admin, async (req, res) => { const { rows } = await pool.query('UPDATE app_users SET role=COALESCE($1,role), active=COALESCE($2,active), name=COALESCE($3,name), updated_at=now() WHERE id=$4 RETURNING id,email,name,role,active', [req.body.role, req.body.active, req.body.name, req.params.id]); if (!rows[0]) return res.status(404).json({ message: 'User not found' }); res.json(rows[0]); });
+app.delete('/api/users/:id', auth, admin, async (req, res) => { if (req.params.id === req.user.id) return res.status(400).json({ message: 'You cannot delete your own administrator account' }); const { rowCount } = await pool.query('DELETE FROM app_users WHERE id=$1', [req.params.id]); if (!rowCount) return res.status(404).json({ message: 'User not found' }); res.status(204).end(); });
 
 const dist = path.resolve(__dirname, '../dist');
 app.use(express.static(dist));
