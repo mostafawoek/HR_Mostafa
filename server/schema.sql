@@ -6,10 +6,13 @@ CREATE TABLE IF NOT EXISTS app_users (
   name TEXT NOT NULL DEFAULT '',
   password_hash TEXT NOT NULL,
   role TEXT NOT NULL DEFAULT 'employee' CHECK (role IN ('admin','employee')),
+  permissions JSONB NOT NULL DEFAULT '{}'::jsonb,
   active BOOLEAN NOT NULL DEFAULT TRUE,
   created_at TIMESTAMPTZ NOT NULL DEFAULT now(),
   updated_at TIMESTAMPTZ NOT NULL DEFAULT now()
 );
+
+ALTER TABLE app_users ADD COLUMN IF NOT EXISTS permissions JSONB NOT NULL DEFAULT '{}'::jsonb;
 
 CREATE TABLE IF NOT EXISTS records (
   id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
@@ -19,6 +22,7 @@ CREATE TABLE IF NOT EXISTS records (
   created_at TIMESTAMPTZ NOT NULL DEFAULT now(),
   updated_at TIMESTAMPTZ NOT NULL DEFAULT now()
 );
+
 CREATE INDEX IF NOT EXISTS records_entity_idx ON records(entity);
 CREATE INDEX IF NOT EXISTS records_created_idx ON records(created_at DESC);
 CREATE INDEX IF NOT EXISTS records_data_gin_idx ON records USING GIN(data);
@@ -31,4 +35,3 @@ CREATE TABLE IF NOT EXISTS file_documents (
   content BYTEA NOT NULL,
   created_at TIMESTAMPTZ NOT NULL DEFAULT now()
 );
-
