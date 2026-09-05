@@ -10,7 +10,7 @@ const entity = name => name === 'User' ? {
   list: () => request('/api/users'),
       update: (id, data) => request(`/api/users/${id}`, json('PATCH', { ...data, ...(data.role ? { role: data.role === 'admin' ? 'admin' : 'employee' } : {}) })),
       create: data => request('/api/users', json('POST', data)),
-  delete: () => Promise.reject(new Error('User deletion is disabled; deactivate the account instead')),
+  delete: id => request(`/api/users/${id}`, { method: 'DELETE' }),
 } : {
   list: (order, limit) => request(`/api/entities/${name}?order=${encodeURIComponent(order || 'created_at')}&limit=${limit || 500}`),
   create: data => request(`/api/entities/${name}`, json('POST', data)),
