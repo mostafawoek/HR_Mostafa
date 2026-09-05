@@ -24,6 +24,14 @@ export function useHrLabels() {
     genderLabels: ar ? { male: { label: 'ذكر' }, female: { label: 'أنثى' } } : { male: { label: 'Male' }, female: { label: 'Female' } },
     formatDate: value => value ? new Intl.DateTimeFormat(ar ? 'ar-EG' : 'en-US').format(new Date(value)) : '—',
     formatTime: value => value || '—',
-    formatCurrency: value => new Intl.NumberFormat(ar ? 'ar-EG' : 'en-US', { style: 'currency', currency: 'SAR', maximumFractionDigits: 0 }).format(Number(value || 0)),
+    formatCurrency: value => new Intl.NumberFormat(
+  ar ? 'ar-AE' : 'en-AE',
+  {
+    style: 'currency',
+    currency: 'AED',
+    maximumFractionDigits: 2,
+  }
+).format(Number(value || 0)),
+
   };
 }
