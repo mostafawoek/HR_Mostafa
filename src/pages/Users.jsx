@@ -13,7 +13,7 @@ export default function Users() {
   const { t } = useLanguage();
   const [users, setUsers] = useState([]);
   const [showForm, setShowForm] = useState(false);
-  const [form, setForm] = useState({ email: '', role: 'user' });
+  const [form, setForm] = useState({ name: '', email: '', password: '', role: 'user' });
   const [inviting, setInviting] = useState(false);
   const [loading, setLoading] = useState(true);
   const { toast } = useToast();
@@ -33,9 +33,9 @@ export default function Users() {
     e.preventDefault();
     setInviting(true);
     try {
-      await base44.users.inviteUser(form.email, form.role);
+      await base44.users.inviteUser(form.email, form.role, form.name, form.password);
       toast({ title: t.user_inviteSuccess, description: `${form.email} → ${form.role === 'admin' ? t.user_roleAdmin : t.roleUser}` });
-      setForm({ email: '', role: 'user' });
+      setForm({ name: '', email: '', password: '', role: 'user' });
       setShowForm(false);
       load();
     } catch (err) {
@@ -102,25 +102,26 @@ export default function Users() {
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
           <AnimatePresence>
             {users.map((u, i) => {
-              const RoleIcon = roleLabels[u.role]?.icon || Shield;
+              const uiRole = u.role === 'admin' ? 'admin' : 'user';
+              const RoleIcon = roleLabels[uiRole]?.icon || Shield;
               return (
                 <motion.div key={u.id} initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: i * 0.05 }}
                   className="glass rounded-3xl p-5 border border-border/50 hover:shadow-xl transition-all">
                   <div className="flex items-center gap-4">
-                    <div className={`w-14 h-14 rounded-2xl bg-gradient-to-br ${roleLabels[u.role]?.gradient || roleLabels.user.gradient} flex items-center justify-center shadow-lg shrink-0`}>
+                    <div className={`w-14 h-14 rounded-2xl bg-gradient-to-br ${roleLabels[uiRole]?.gradient || roleLabels.user.gradient} flex items-center justify-center shadow-lg shrink-0`}>
                       <RoleIcon className="w-7 h-7 text-white" />
                     </div>
                     <div className="flex-1 min-w-0">
                       <h3 className="font-bold truncate">{u.full_name || u.email}</h3>
                       {u.full_name && <p className="text-sm text-muted-foreground truncate flex items-center gap-1"><Mail className="w-3.5 h-3.5" /> {u.email}</p>}
-                      <span className={`inline-block mt-2 px-2.5 py-0.5 rounded-full text-xs font-medium ${roleLabels[u.role]?.color || roleLabels.user.color}`}>
-                        {roleLabels[u.role]?.label || t.roleUser}
+                      <span className={`inline-block mt-2 px-2.5 py-0.5 rounded-full text-xs font-medium ${roleLabels[uiRole]?.color || roleLabels.user.color}`}>
+                        {roleLabels[uiRole]?.label || t.roleUser}
                       </span>
                     </div>
                   </div>
                   <div className="mt-4 pt-4 border-t border-border/50">
                     <Label className="text-xs mb-1.5 block">{t.user_changeRole}</Label>
-                    <Select value={u.role} onValueChange={v => updateRole(u.id, v)}>
+                    <Select value={uiRole} onValueChange={v => updateRole(u.id, v)}>
                       <SelectTrigger className="rounded-xl h-10"><SelectValue /></SelectTrigger>
                       <SelectContent>
                         <SelectItem value="admin">{t.user_roleAdmin}</SelectItem>
@@ -142,9 +143,11 @@ export default function Users() {
             <motion.div initial={{ scale: 0.95, y: 20 }} animate={{ scale: 1, y: 0 }} onClick={e => e.stopPropagation()}
               className="glass rounded-3xl w-full max-w-md border border-border/50 shadow-2xl p-6">
               <h2 className="text-xl font-extrabold text-gradient mb-4">{t.user_newTitle}</h2>
-              <p className="text-sm text-muted-foreground mb-4">{t.user_inviteDesc}</p>
+              <p className="text-sm text-muted-foreground mb-4">Create login credentials for a new system user.</p>
               <form onSubmit={handleInvite} className="space-y-4">
+                <div className="space-y-1.5"><Label>Full name</Label><Input value={form.name} onChange={e => setForm({ ...form, name: e.target.value })} required className="rounded-xl" placeholder="Employee name" /></div>
                 <div className="space-y-1.5"><Label>{t.user_email}</Label><Input type="email" value={form.email} onChange={e => setForm({ ...form, email: e.target.value })} required className="rounded-xl" placeholder="user@example.com" /></div>
+                <div className="space-y-1.5"><Label>Initial password (8+ characters)</Label><Input type="password" minLength={8} value={form.password} onChange={e => setForm({ ...form, password: e.target.value })} required className="rounded-xl" placeholder="Temporary password" /></div>
                 <div className="space-y-1.5">
                   <Label>{t.user_role}</Label>
                   <Select value={form.role} onValueChange={v => setForm({ ...form, role: v })}>
@@ -157,7 +160,7 @@ export default function Users() {
                 </div>
                 <div className="flex gap-3 pt-2">
                   <Button type="submit" disabled={inviting} className="flex-1 gradient-primary text-white rounded-2xl h-12 font-bold">
-                    {inviting ? <><Loader2 className="w-4 h-4 ml-2 animate-spin" /> {t.user_sending}</> : t.user_sendInvite}
+                    {inviting ? <><Loader2 className="w-4 h-4 ml-2 animate-spin" /> Creating...</> : 'Create user'}
                   </Button>
                   <Button type="button" variant="outline" onClick={() => setShowForm(false)} className="rounded-2xl h-12 px-6">{t.cancel}</Button>
                 </div>
