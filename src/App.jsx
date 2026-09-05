@@ -20,6 +20,7 @@ import Salaries from '@/pages/Salaries';
 import Reports from '@/pages/Reports';
 import Login from '@/pages/Login';
 import Register from '@/pages/Register';
+import { Toaster } from '@/components/ui/toaster';
 
 const PermissionDenied = () => {
   const { lang } = useLanguage();
