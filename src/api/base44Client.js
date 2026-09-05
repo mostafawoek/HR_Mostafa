@@ -8,8 +8,8 @@ const request = async (url, options = {}) => {
 const json = (method, body) => ({ method, headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(body) });
 const entity = name => name === 'User' ? {
   list: () => request('/api/users'),
-  update: (id, data) => request(`/api/users/${id}`, json('PATCH', data)),
-  create: () => Promise.reject(new Error('Users are created through registration')),
+      update: (id, data) => request(`/api/users/${id}`, json('PATCH', { ...data, ...(data.role ? { role: data.role === 'admin' ? 'admin' : 'employee' } : {}) })),
+      create: data => request('/api/users', json('POST', data)),
   delete: () => Promise.reject(new Error('User deletion is disabled; deactivate the account instead')),
 } : {
   list: (order, limit) => request(`/api/entities/${name}?order=${encodeURIComponent(order || 'created_at')}&limit=${limit || 500}`),
@@ -27,5 +27,6 @@ export const base44 = {
     redirectToLogin: () => { window.location.href = '/login'; },
     loginWithProvider: () => { throw new Error('Google login is not configured. Use email and password.'); },
   },
+  users: { inviteUser: (email, role = 'user', name = '', password) => request('/api/users', json('POST', { email, role: role === 'admin' ? 'admin' : 'employee', name, password })) },
   integrations: { Core: { UploadFile: async ({ file }) => { const form = new FormData(); form.append('file', file); return request('/api/entities/Document/upload', { method: 'POST', body: form }); } } }
 };
