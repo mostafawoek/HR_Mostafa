@@ -117,3 +117,13 @@
   .scrollbar-thin::-webkit-scrollbar-thumb { background: hsl(250 20% 80%); border-radius: 999px; }
   .scrollbar-thin::-webkit-scrollbar-track { background: transparent; }
 }
+
+/* في ملف index.css أو globals.css */
+@keyframes shake {
+  0%, 100% { transform: translateX(0); }
+  20%, 60% { transform: translateX(-5px); }
+  40%, 80% { transform: translateX(5px); }
+}
+.animate-shake {
+  animation: shake 0.4s ease-in-out;
+}
